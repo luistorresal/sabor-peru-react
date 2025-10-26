@@ -1,6 +1,9 @@
 // src/App.js
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+
 
 // Páginas
 import Home from "./pages/Home";
@@ -24,6 +27,7 @@ export default function App() {
           <Route path="/carrito" element={<Carrito />} />
         </Routes>
       </main>
+      <Footer />
     </BrowserRouter>
   );
 }
