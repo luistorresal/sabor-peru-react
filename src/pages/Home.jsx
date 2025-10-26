@@ -1,3 +1,7 @@
+
+// Acceso al contexto del carrito
+import { useCart } from "../context/CartContext";
+
 //Imágenes del carrusel
 import slide1 from "../assets/carrusel/carrusel1.jpeg";
 import slide2 from "../assets/carrusel/carrusel2.jpeg";
@@ -9,7 +13,9 @@ import imgChifles from "../assets/snacks-dulces/chifles.jpeg";
 import imgKingkong from "../assets/snacks-dulces/kingkong.jpeg";
 import imgMazamorra from "../assets/postres-tradicionales/mazamorra-morada.jpeg";
 
-export default function Home() {
+export default function Home({ showToast = () => {} }) {
+  // Tomamos la acción para agregar items al carrito
+  const { addItem, openCart} = useCart();
   return (
     <>
       {/* HERO con carrusel */}
@@ -89,6 +95,19 @@ export default function Home() {
               { id: 4, name: "Mazamorra morada", price: 2990, img: imgMazamorra },
             ];
 
+            // Agrega un producto al carrito con cantidad 1
+            const handleAdd = (p) => {
+              // Estructura mínima esperada por el carrito
+              addItem({
+                id: p.id,
+                name: p.name,
+                price: p.price,
+                img: p.img,
+                qty: 1,
+              });
+              showToast(`Añadido: ${p.name}`);
+            };
+
             return (
               <div className="row g-4">
                 {productos.map((p) => (
@@ -98,7 +117,16 @@ export default function Home() {
                       <div className="card-body d-flex flex-column">
                         <h5 className="card-title mb-1">{p.name}</h5>
                         <p className="text-muted mb-3">{formatCurrency(p.price)}</p>
-                        <button className="btn btn-danger mt-auto">Agregar al carrito</button>
+                        <button
+                          className="btn btn-danger mt-auto"
+                          onClick={() => {
+                            handleAdd(p);  // ✅ ya agregabas al carrito
+                            openCart();    // ✅ esto abrirá el panel automáticamente
+                          }}
+                        >
+                          Agregar al carrito
+                        </button>
+
                       </div>
                     </div>
                   </div>

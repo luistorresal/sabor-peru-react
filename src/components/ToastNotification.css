@@ -1,0 +1,26 @@
+/* Contenedor fijo en parte superior derecha */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.toast-container.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Caja del mensaje */
+.toast-message {
+  background-color: #28a745; /* Verde éxito */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
