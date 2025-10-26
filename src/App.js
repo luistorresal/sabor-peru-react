@@ -7,6 +7,7 @@ import CartSidebar from "./components/CartSidebar";
 import "./App.css";
 import React, { useState } from "react";
 import ToastNotification from "./components/ToastNotification";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 // Páginas
@@ -33,6 +34,7 @@ export default function App() {
 
     <CartProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Navbar />
         {/*Home SIN container para que el carrusel ocupe toda la pantalla */}
         <Routes>
