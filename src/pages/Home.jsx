@@ -1,7 +1,13 @@
-// src/pages/Home.jsx
+//Imágenes del carrusel
 import slide1 from "../assets/carrusel/carrusel1.jpeg";
 import slide2 from "../assets/carrusel/carrusel2.jpeg";
 import slide3 from "../assets/carrusel/carrusel3.jpeg";
+
+//Imágenes de productos para la sección Productos Destacados
+import imgAlfajores from "../assets/snacks-dulces/alfajores.jpeg";
+import imgChifles from "../assets/snacks-dulces/chifles.jpeg";
+import imgKingkong from "../assets/snacks-dulces/kingkong.jpeg";
+import imgMazamorra from "../assets/postres-tradicionales/mazamorra-morada.jpeg";
 
 export default function Home() {
   return (
@@ -12,7 +18,7 @@ export default function Home() {
           <div className="carousel-inner">
 
             <div className="carousel-item active">
-              <img src={slide1} className="d-block w-100" alt="Sabor Perú - slide 1" />
+              <img src={slide1} className="d-block w-100 hero-slide" alt="Sabor Perú - slide 1" />
               <div className="carousel-caption text-start">
                 <span className="badge bg-warning text-dark mb-2">Hecho en nuestra tierra</span>
                 <h1 className="display-5 fw-bold">Snacks que inspiran</h1>
@@ -22,7 +28,7 @@ export default function Home() {
             </div>
 
             <div className="carousel-item">
-              <img src={slide2} className="d-block w-100" alt="Sabor Perú - slide 2" />
+              <img src={slide2} className="d-block w-100 hero-slide" alt="Sabor Perú - slide 2" />
               <div className="carousel-caption">
                 <h2 className="fw-bold">Postres tradicionales</h2>
                 <p>Sabores que nos conectan con nuestras raíces.</p>
@@ -31,7 +37,7 @@ export default function Home() {
             </div>
 
             <div className="carousel-item">
-              <img src={slide3} className="d-block w-100" alt="Sabor Perú - slide 3" />
+              <img src={slide3} className="d-block w-100 hero-slide" alt="Sabor Perú - slide 3" />
               <div className="carousel-caption text-end">
                 <h2 className="fw-bold">Dulces para compartir</h2>
                 <p>Lleva lo mejor de Sabor Perú a tu mesa.</p>
@@ -58,6 +64,50 @@ export default function Home() {
           </div>
         </div>
       </header>
+      {/* ====== Productos destacados ====== */}
+      <section className="py-5">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-end mb-3">
+            <h2 className="mb-0">Productos destacados</h2>
+            <a className="btn btn-outline-danger btn-sm" href="/productos">Ver todos</a>
+          </div>
+
+          {(() => {
+            // Función para formatear en pesos chilenos
+            const formatCurrency = (value) => {
+              return new Intl.NumberFormat("es-CL", {
+                style: "currency",
+                currency: "CLP",
+                minimumFractionDigits: 0
+              }).format(value);
+            };
+
+            const productos = [
+              { id: 1, name: "Alfajores", price: 1990, img: imgAlfajores },
+              { id: 2, name: "Chifles", price: 1590, img: imgChifles },
+              { id: 3, name: "King Kong", price: 4490, img: imgKingkong },
+              { id: 4, name: "Mazamorra morada", price: 2990, img: imgMazamorra },
+            ];
+
+            return (
+              <div className="row g-4">
+                {productos.map((p) => (
+                  <div className="col-12 col-sm-6 col-lg-3" key={p.id}>
+                    <div className="card h-100 shadow-sm">
+                      <img src={p.img} alt={p.name} className="card-img-top" />
+                      <div className="card-body d-flex flex-column">
+                        <h5 className="card-title mb-1">{p.name}</h5>
+                        <p className="text-muted mb-3">{formatCurrency(p.price)}</p>
+                        <button className="btn btn-danger mt-auto">Agregar al carrito</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
+        </div>
+      </section>
     </>
   );
 }
