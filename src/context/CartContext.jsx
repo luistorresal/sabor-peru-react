@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
 
 // 1) Creamos el contexto
-const CartContext = createContext(null);
+export const CartContext = createContext(null);
 
 // 2) Hook de conveniencia para consumir el contexto desde cualquier componente
 export const useCart = () => {
