@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+// src/pages/Login.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
+  
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Si ya está logueado, redirigir a inicio
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+    setServerError(""); // Limpiar error del servidor al escribir
   };
 
   const validate = () => {
@@ -19,16 +35,40 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    alert("Inicio de sesión simulado ✅");
-    // Aquí luego integrarías tu backend o Firebase, etc.
+    
+    setLoading(true);
+    setServerError("");
+    
+    try {
+      const result = await login(form.email, form.password);
+      
+      if (result.success) {
+        // Redirigir a la página principal
+        navigate("/");
+      } else {
+        setServerError(result.error || "Credenciales inválidas");
+      }
+    } catch (error) {
+      setServerError("Error de conexión con el servidor");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="container py-5" style={{ maxWidth: 520 }}>
       <h1 className="mb-4">Ingresar</h1>
+      
+      {/* Mostrar error del servidor */}
+      {serverError && (
+        <div className="alert alert-danger" role="alert">
+          {serverError}
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} noValidate>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Correo</label>
@@ -40,6 +80,7 @@ export default function Login() {
             placeholder="tucorreo@ejemplo.com"
             value={form.email}
             onChange={handleChange}
+            disabled={loading}
           />
           {errors.email && <div className="invalid-feedback">{errors.email}</div>}
         </div>
@@ -54,11 +95,25 @@ export default function Login() {
             placeholder="******"
             value={form.password}
             onChange={handleChange}
+            disabled={loading}
           />
           {errors.password && <div className="invalid-feedback">{errors.password}</div>}
         </div>
 
-        <button type="submit" className="btn btn-danger w-100">Ingresar</button>
+        <button 
+          type="submit" 
+          className="btn btn-danger w-100"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Ingresando...
+            </>
+          ) : (
+            "Ingresar"
+          )}
+        </button>
 
         <p className="text-center mt-3 mb-0">
           ¿No tienes cuenta? <a href="/registro">Crear cuenta</a>

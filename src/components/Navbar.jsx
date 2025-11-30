@@ -1,31 +1,27 @@
 // src/components/Navbar.jsx
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-// Estado/acciones del carrito (contador y abrir panel)
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  // ▸ Carrito: contador y acción para abrir el panel lateral
   const { count, toggleCart } = useCart();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
 
-  // ▸ Control del menú (collapse) en móviles
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Evita que el body haga scroll cuando el menú está abierto (móvil)
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    // Limpieza por seguridad
     return () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
 
-  // Cierra el menú automáticamente si ampliamos la pantalla (>=992px)
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 992) {
@@ -36,8 +32,13 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Cerrar menú al navegar
   const closeAndNavigate = () => setMenuOpen(false);
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <nav
@@ -62,7 +63,7 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menú colapsable controlado por estado (sin JS de Bootstrap) */}
+        {/* Menú colapsable */}
         <div
           id="navMain"
           className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}
@@ -86,35 +87,64 @@ export default function Navbar() {
               </NavLink>
             </li>
 
-            {/* Botones lado derecho */}
-            <li className="nav-item ms-lg-3">
-              <Link
-                className="btn btn-warning btn-sm fw-semibold"
-                to="/login"
-                onClick={closeAndNavigate}
-              >
-                Ingresar
-              </Link>
-            </li>
+            {/* ===== SECCIÓN CONDICIONAL SEGÚN AUTENTICACIÓN ===== */}
+            
+            {isAuthenticated() ? (
+              // Usuario LOGUEADO
+              <>
+                {/* Mostrar nombre y rol */}
+                <li className="nav-item ms-lg-3">
+                  <span className="nav-link text-warning fw-semibold">
+                    👤 {user?.nombre}
+                    {isAdmin() && (
+                      <span className="badge bg-warning text-dark ms-2">ADMIN</span>
+                    )}
+                  </span>
+                </li>
 
-            <li className="nav-item ms-2">
-              <Link
-                className="btn btn-outline-light btn-sm"
-                to="/registro"
-                onClick={closeAndNavigate}
-              >
-                Crear cuenta
-              </Link>
-            </li>
+                {/* Botón cerrar sesión */}
+                <li className="nav-item ms-2">
+                  <button
+                    className="btn btn-outline-light btn-sm"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </button>
+                </li>
+              </>
+            ) : (
+              // Usuario NO LOGUEADO
+              <>
+                <li className="nav-item ms-lg-3">
+                  <Link
+                    className="btn btn-warning btn-sm fw-semibold"
+                    to="/login"
+                    onClick={closeAndNavigate}
+                  >
+                    Ingresar
+                  </Link>
+                </li>
 
-            {/* Carrito: abre el sidebar y muestra contador (useCart) */}
+                <li className="nav-item ms-2">
+                  <Link
+                    className="btn btn-outline-light btn-sm"
+                    to="/registro"
+                    onClick={closeAndNavigate}
+                  >
+                    Crear cuenta
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {/* Carrito */}
             <li className="nav-item ms-2 position-relative">
               <button
                 type="button"
                 className="btn btn-outline-light btn-sm position-relative"
                 onClick={() => {
-                  setMenuOpen(false); // por si estamos en móvil, cerramos el menú
-                  toggleCart();       // abrimos/cerramos el panel del carrito
+                  setMenuOpen(false);
+                  toggleCart();
                 }}
               >
                 Carrito
