@@ -2,7 +2,7 @@
 // Servicio para conectar con el backend Spring Boot
 
 // URL del Backend en AWS EC2
-const API_URL = 'http://3.238.254.155:8080/api';
+const API_URL = 'http://3.236.59.66:8080/api';
 
 // ==================== AUTENTICACIÓN ====================
 
