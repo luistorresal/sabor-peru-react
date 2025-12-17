@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
+import React, { useEffect, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
